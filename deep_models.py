@@ -17,6 +17,7 @@ from tensorflow.keras.layers import SimpleRNN, Dense, LSTM, GRU, Conv1D, Softmax
 
 def LSTM_model(x_test, y, x_train, y_train):
     x_val, x_test, y_val, y_test = train_test_split(x_test, y, test_size=0.5, train_size=0.5)
+    print(x_train.shape)
     x_train = x_train.reshape(1600, 50, 24)
     y_train = y_train.reshape(1600, 16)
     print("Num GPUs Available: ", len(tf.config.list_physical_devices('GPU')))

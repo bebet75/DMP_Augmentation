@@ -16,8 +16,7 @@ def quat_multiply(quaternion0, quaternion1):
         axis=-1)
 
 
-y_main = np.load('y.npy')
-x_main = np.load('x.npy')
+
 
 for nthrun in range(10):
     accuracies_rnn = []

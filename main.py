@@ -1,15 +1,26 @@
 # This is a sample Python script.
-
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
-
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+from General_func import *
+from DMP_aug import *
+from deep_models import *
 
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+
+def main():
+    y_main = np.load('y.npy')
+    x_main = np.load('x.npy')
+    N_dat = 5
+    ll = 5
+    x_train, y_train, x, y = our_data_selection(x_main,y_main,N_dat,ll)
+    x_test_quad, x_test_fing1, x_test_fing2 = get_stokoe(x)
+    x_train_quad, x_train_fing1, x_train_fing2 = get_stokoe(x_train)
+    dmp_list_quad = quaternion_dmp_maker(x_train_quad, duration = 5.0)
+    dmp_list_fing1 = fing1_dmp_maker(x_train_fing1, duration = 5.0)
+    x_test = test_array(x_test_quad,x_test_fing1,x_test_fing2,duration=5)
+    x_train, y_train = aug_generator(20, dmp_list_fing1, dmp_list_quad, x_train_fing2, y_train)
+    LSTM_model(x_test, y, x_train, y_train)
+    CNN_model(x_test, y, x_train, y_train)
+
+main()
+
+

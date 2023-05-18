@@ -19,8 +19,6 @@ def quaternion_dmp_maker(x_train_quad, duration = 5.0):
         t = np.linspace(0, duration, len(one_train_quad))
         mydmp = CartesianDMP(2, n_weights_per_dim=6, dt=0.041)
         mydmp.imitate(t, one_train_quad)
-        # (T,yyy3) = mydmp.open_loop()
-        # dmp_dict_quad.append(yyy3)
         dmp_list_quat.append(mydmp)
     return dmp_list_quat
 
@@ -31,8 +29,6 @@ def fing1_dmp_maker(x_train_fing1, duration = 5.0):
         t = np.linspace(0, duration, len(one_train_fing1))
         mydmp = DMP(5, 2, n_weights_per_dim=6, dt=0.041)
         mydmp.imitate(t, one_train_fing1)
-        # (T,yyy3) = mydmp.open_loop()
-        # dmp_dict_quad.append(yyy3)
         dmp_list_fing1.append(mydmp)
     return dmp_list_fing1
 
@@ -91,7 +87,7 @@ def dmp_gen_fing1(dmp_dict_fing1, alpha_z, alpha_y):
         thedmp1.goal_y = goalmain1
         dmp_dict_fing11.append(yy1)
 
-        return dmp_dict_fing11
+    return dmp_dict_fing11
 
 
 def dmp_gen_quat(dmp_dict_quad, alpha_z, alpha_y):
@@ -128,7 +124,7 @@ def dmp_gen_quat(dmp_dict_quad, alpha_z, alpha_y):
         thedmp1.goal_y = goalmain1
         dmp_dict_quad2.append(yy1)
 
-        return dmp_dict_quad2
+    return dmp_dict_quad2
 
 
 def aug_generator(num_rep, dmp_dict_fing1, dmp_dict_quad, x_train_fing2, y_train):
@@ -137,8 +133,8 @@ def aug_generator(num_rep, dmp_dict_fing1, dmp_dict_quad, x_train_fing2, y_train
     alpha_z = np.random.normal(4.6, 0.5, 2000)
     alpha_y = np.random.normal(25, 5, 2000)
     for i in range(num_rep):
-        dmp_dict_fing11 = (dmp_dict_fing1)
-        dmp_dict_quad2 = dmp_gen_quat(dmp_dict_quad)
+        dmp_dict_fing11 = dmp_gen_fing1(dmp_dict_fing1, alpha_z, alpha_y)
+        dmp_dict_quad2 = dmp_gen_quat(dmp_dict_quad, alpha_z, alpha_y)
         augmentdata1 = aug.magnitude_warp(aug.time_warp(aug.permutation(x_train_fing2)))
         augmentdata = np.concatenate((dmp_dict_quad2, dmp_dict_fing11, augmentdata1), axis=2)
         new_x = new_x + [augmentdata]
@@ -146,6 +142,8 @@ def aug_generator(num_rep, dmp_dict_fing1, dmp_dict_quad, x_train_fing2, y_train
 
     x_train = np.array(new_x)
     y_train = np.array(new_y)
+
+    return x_train, y_train
 
 
 
